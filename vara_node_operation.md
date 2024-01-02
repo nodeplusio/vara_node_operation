@@ -164,7 +164,7 @@ The fastest and simplest way to update the validator:
 * Basic monitoring (CPU, memory, disk, etc.) + specific metrics monitoring (uptime, block height, validator status, etc.).
 * Receive alerts through PagerDuty, Telegram, and DingTalk. Handle alerts promptly upon occurrence.
 * Check the Grafana dashboard at least once a day to detect any abnormal monitoring metrics.
-* Subscribe to new version release information via the company email group dev@eosio.sg and upgrade promptly.
+* Subscribe to new version release information via the company email group and upgrade promptly.
 
 ## **Reference Documents**
 
