@@ -124,15 +124,15 @@ Go to Polkadot.{js} app and navigate to Network → Staking → [Account action
 
 Choose your stash and controller accounts and specify your stake amount. It's recommended to utilize distinct accounts both stash and controller.
 
-![5237745d-7fa6-4398-af7a-75cf178c495e](file:///C:/Users/xubin/Pictures/Typedown/5237745d-7fa6-4398-af7a-75cf178c495e.png)
+![5237745d-7fa6-4398-af7a-75cf178c495e](file:///img/5237745d-7fa6-4398-af7a-75cf178c495e.png)
 
 Set the `session key` and reward commission.
 
-![a7c5bf20-8b70-4fad-b68e-5a576b91d658](file:///C:/Users/xubin/Pictures/Typedown/a7c5bf20-8b70-4fad-b68e-5a576b91d658.png)
+![a7c5bf20-8b70-4fad-b68e-5a576b91d658](file:///img/a7c5bf20-8b70-4fad-b68e-5a576b91d658.png)
 
 Sign the transaction. Ensure you're added to the stash account and wait for the next Era to start. Once it begins, the network will add your validator.
 
-![c10df94f-1d97-4194-8b7a-5a07adf55aa9](file:///C:/Users/xubin/Pictures/Typedown/c10df94f-1d97-4194-8b7a-5a07adf55aa9.png)
+![c10df94f-1d97-4194-8b7a-5a07adf55aa9](file:///img/c10df94f-1d97-4194-8b7a-5a07adf55aa9.png)
 
 ## **Update Validator**
 
