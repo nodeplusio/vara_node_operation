@@ -168,11 +168,11 @@ The fastest and simplest way to update the validator:
 
 ## **Reference Documents**
 
-Official site: [https://vara.network/](https://vara.network/)
-Block Explorer: [https://explorer.vara-network.io/](https://explorer.vara-network.io/)
-Vara Wiki: [https://wiki.vara.network/](https://wiki.vara.network/)
-Node Telemetry: [https://telemetry.rs/](https://telemetry.rs/)
-Tokenomics:[ https://wiki.vara.network/docs/tokenomics/]( https://wiki.vara.network/docs/tokenomics/)
-Whitepaper: [https://whitepaper.gear.foundation/](https://whitepaper.gear.foundation/)
-Gear Wiki: [https://wiki.gear-tech.io/](https://wiki.gear-tech.io/)
-Gear Foundation: [https://gear.foundation/](https://gear.foundation/)
+* Official site: [https://vara.network/](https://vara.network/)
+* Block Explorer: [https://explorer.vara-network.io/](https://explorer.vara-network.io/)
+* Vara Wiki: [https://wiki.vara.network/](https://wiki.vara.network/)
+* Node Telemetry: [https://telemetry.rs/](https://telemetry.rs/)
+* Tokenomics:[ https://wiki.vara.network/docs/tokenomics/]( https://wiki.vara.network/docs/tokenomics/)
+* Whitepaper: [https://whitepaper.gear.foundation/](https://whitepaper.gear.foundation/)
+* Gear Wiki: [https://wiki.gear-tech.io/](https://wiki.gear-tech.io/)
+* Gear Foundation: [https://gear.foundation/](https://gear.foundation/)
