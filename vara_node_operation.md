@@ -7,8 +7,8 @@
 * Use the Ubuntu account for single sign-on.
 * Firewall settings allow login only through the jump server bastion host.
 * Disable root account login; use sudo if necessary.
-* Business port 30333 has full firewall access.
-* Monitoring ports 9100 and 9090 are open for the monitoring host.
+* Allow only port 30333 with full firewall access.
+* Monitoring ports 9100 and 9090 are only allowed to be opened to the monitoring host.
 
 **2. Private Key Management**
 
