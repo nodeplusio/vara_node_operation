@@ -5,7 +5,6 @@
 **1. Server Security**
 
 * Use the Ubuntu account for single sign-on.
-* SSH port is set to 22.
 * Firewall settings allow login only through the jump server bastion host.
 * Disable root account login; use sudo if necessary.
 * Business port 30333 has full firewall access.
@@ -13,9 +12,36 @@
 
 **2. Private Key Management**
 
+Two different accounts can be used to securely manage your funds while staking.
+
+* **Stash:** This account holds funds bonded for staking, but delegates all staking functions to a staking proxy account. You may actively participate in staking with a stash private key kept in a cold wallet like Ledger, meaning it stays offline all the time. Having a staking proxy will allow you to sign all staking-related transactions with the proxy instead of using your Ledger device. This will allow you:
+  
+  * to avoid carrying around your Ledger device just to sign staking-related transactions, and
+  * to and to keep the transaction history of your stash clean
+
+* **Staking Proxy(Controller):** This account acts on behalf of the stash account, signaling decisions about nominating and validating. It can set preferences like commission (for validators) and the staking rewards payout account. The earned rewards can be bonded (locked) immediately for bonding on your stash account, which would effectively compound the rewards you receive over time. You could also choose to have them deposited to a different account as a free (transferable) balance. If you are a validator, it can also be used to set your [session keys](https://wiki.polkadot.network/docs/learn-cryptography). Staking proxies only need sufficient funds to pay for the transaction fees.
+
 * Separate management of Stash and controller private keys. [Understand stash and controller](https://wiki.polkadot.network/docs/en/learn-staking#accounts).
+
 * Stash is stored in a hardware wallet.
+
 * Controller mnemonic appears in the claim script. Ensure server security is maintained.
+
+**3. Protect Yourself from Scams**
+
+Scams are an unfortuante reality of the crypto industry. It's important to stay alert and protect yourself and your non-refundable crypto assets from scammers.
+
+- Never, ever, ever share your seed phrase or account password.
+
+- Do not trust anyone online. It is trivial for them to lie and change their identities.
+
+- If you are scammed, there is likely nothing that can be done to recover your funds. If a scammer gets a hold of your seed phrase, they can transfer all of your funds to their account in seconds. It is better to be safe than to risk all of your tokens.
+
+- If it sounds too good to be true, it probably is. People, especially celebrities, do not give away crypto for free. Even if they wanted to, they could just ask for your address as opposed to having you send them tokens.
+
+- Scams are absolutely rife in this space. It is easy and cheap to set a scam up, and hard to shut one down. Therefore, the onus is on the user to be as diligent as possible in avoiding them.
+
+- If you can, try to always verify new information that you see with an official source. Often scammers will fake a website or a blog post, but if you check it against a secondary source you will reduce the chances of being scammed.
 
 ## Hardware requirements
 
@@ -116,6 +142,8 @@ Output:
 
 The output will have a hex-encoded `result` field. Copy and save it!
 
+
+
 ## Setup Validator
 
 Once your node is live, synchronized, and appears in telemetry, and session keys are prepared, it's time to set up the validator.
@@ -146,9 +174,29 @@ The fastest and simplest way to update the validator:
 
 ## Migration Validator
 
+Validators perform critical functions for the network, and as such, have strict uptime requirements. Validators may have to go offline for short-periods of time to upgrade client software or to upgrade the host machine. Usually, standard client upgrades will only require you to stop the service, replace the binary and restart the service. This operation can be executed within a session and if performed correctly will not produce a slashable event.
+
+Validators may also need to perform long-lead maintenance tasks that will span more than one session. Under these circumstances, an active validator may chill their stash and be removed from the active validator set. Alternatively, the validator may substitute the active validator server with another allowing the former to undergo maintenance activities.
+
+This guide will provide an option for validators to seamlessly substitute an active validator server to allow for maintenance operations.
+
+The process can take several hours, so make sure you understand the instructions first and plan accordingly.
+
+**Session Keys**
+
+Session keys are stored in the client and used to sign validator operations. They are what link your validator node to your staking proxy. If you change them within a session you will have to wait for the current session to finish and a further two sessions to elapse before they are applied.
+
+**Keystore**
+
+Each validator server contains essential private keys in a folder called the _keystore_. These keys are used by a validator to sign transactions at the network level. If two or more validators sign certain transactions using the same keys, it can lead to an [equivocation slash](https://wiki.polkadot.network/docs/learn-staking#slashing).
+
+For this reason, it is advised that validators DO NOT CLONE or COPY the _keystore_ folder and instead generate session keys for each new validator instance.
+
+Default keystore path - `~/.local/share/gear/chains/vara_network/keystore`
+
 1. Assuming the original host is Host A, and the migrated host is Host B.
 
-2. Host B goes through the installation steps, and after synchronization, starts as a validator. (**Note: Do not use Host A's disk snapshot for Host B's installation, as it may lead to double-signing and result in slashing.**)
+2. Host B goes through the installation steps, and after synchronization, starts as a validator. (**Note: Do not use Host A's disk snapshot for Host B's installation, as it may lead to an equivocation slash.**)
 
 3. Host B generates a new session key.
 
@@ -157,13 +205,49 @@ The fastest and simplest way to update the validator:
 5. Wait for the next epoch (1 epoch equals 2 hours). The session key will be updated to Host B's session key. At this point, Host A needs to continue running.
 
 6. Wait for the next era (1 era equals 12 hours). Host A can be shut down, and the migration is complete.
+   
+   
+
+## Introduction to Slashing
+
+Slashing will happen if a validator misbehaves (e.g. goes offline, attacks the network, or runs modified software) in the network. They and their nominators will get slashed by losing a percentage of their bonded/staked VARA.
+
+Any slashed VARA will be added to the [Treasury](https://wiki.polkadot.network/docs/learn-treasury). The rationale for this (rather than burning or distributing them as rewards) is that slashes may then be reverted by the Council by simply paying out from the Treasury. This would be useful in situations such as faulty slashes. In the case of legitimate slashing, it moves tokens away from malicious validators to those building the ecosystem through the normal Treasury process.
+
+Validators with a larger total stake backing them will get slashed more harshly than less popular ones, so we encourage nominators to shift their nominations to less popular validators to reduce their possible losses.
+
+It is important to realize that slashing only occurs for active validations for a given nominator, and slashes are not mitigated by having other inactive or waiting nominations. They are also not mitigated by the validator operator running separate validators; each validator is considered its own entity for purposes of slashing, just as they are for staking rewards.
+
+In rare instances, a nominator may be actively nominating several validators in a single era. In this case, the slash is proportionate to the amount staked to that specific validator. With very large bonds, such as parachain liquid staking accounts, a nominator has multiple active nominations per era. Note that you cannot control the percentage of stake you have allocated to each validator or choose who your active validator will be (except in the trivial case of nominating a single validator). Staking allocations are controlled by the [Phragmén algorithm](https://wiki.polkadot.network/docs/learn-phragmen).
+
+Once a validator gets slashed, it goes into the state as an "unapplied slash". You can check this via [Polkadot-JS UI](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.polkadot.io#/staking/slashes). The UI shows it per validator and then all the affected nominators along with the amounts. While unapplied, a governance proposal can be made to reverse it during this period (7 days). After the grace period, the slashes are applied.
+
+The following levels of offense are [defined](https://research.web3.foundation/Polkadot/security/slashing/amounts). However, these particular levels are not implemented or referred to in the code or in the system; they are meant as guidelines for different levels of severity for offenses. To understand how slash amounts are calculated, see the equations in the section below.
+
+* Level 1: isolated [unresponsiveness](https://wiki.polkadot.network/docs/learn-staking-advanced#unresponsiveness), i.e. being offline for an entire session. Generally no slashing, only [chilling](https://wiki.polkadot.network/docs/learn-staking#chilling).
+* Level 2: concurrent unresponsiveness or isolated [equivocation](https://wiki.polkadot.network/docs/learn-staking-advanced#equivocation), slashes a very small amount of the stake and chills.
+* Level 3: misconducts unlikely to be accidental, but which do not harm the network's security to any large extent. Examples include concurrent equivocation or isolated cases of unjustified voting in [GRANDPA](https://wiki.polkadot.network/docs/learn-consensus). Slashes a moderately small amount of the stake and chills.
+* Level 4: misconduct that poses serious security or monetary risk to the system, or mass collusion. Slashes all or most of the stake behind the validator and chills.
+  
+  
+
+## Rewards management
+
+Use the claim script to schedule rewards claim at the end of each era,after the claim script runs normally, the number of rewards will be notified through monitoring alarms.
+
+![8c375517-4e70-4fa9-96b1-7bd79c6bb317](file:///C:/Users/xubin/Pictures/Typedown/8c375517-4e70-4fa9-96b1-7bd79c6bb317.png)
 
 ## **Monitoring**
 
 * Use Grafana + Prometheus for monitoring.
-* Basic monitoring (CPU, memory, disk, etc.) + specific metrics monitoring (uptime, block height, validator status, etc.).
+
+* Basic monitoring (CPU, memory, disk, etc.) + specific metrics monitoring (uptime, block height, peers,validator status, etc.).
+  ![3a5773ae-1115-4d1b-b00f-f53bdb32ce61](file:///C:/Users/xubin/Pictures/Typedown/3a5773ae-1115-4d1b-b00f-f53bdb32ce61.png)
+
 * Receive alerts through PagerDuty, Telegram, and DingTalk. Handle alerts promptly upon occurrence.
+
 * Check the Grafana dashboard at least once a day to detect any abnormal monitoring metrics.
+
 * Subscribe to new version release information via the company email group and upgrade promptly.
 
 ## **Reference Documents**
