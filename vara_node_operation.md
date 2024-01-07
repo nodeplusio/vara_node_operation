@@ -235,14 +235,14 @@ The following levels of offense are [defined](https://research.web3.foundation/
 
 Use the claim script to schedule rewards claim at the end of each era,after the claim script runs normally, the number of rewards will be notified through monitoring alarms.
 
-![8c375517-4e70-4fa9-96b1-7bd79c6bb317](file:///C:/Users/xubin/Pictures/Typedown/8c375517-4e70-4fa9-96b1-7bd79c6bb317.png)
+![8c375517-4e70-4fa9-96b1-7bd79c6bb317](https://github.com/nodeplusio/vara_node_operation/blob/main/img/8c375517-4e70-4fa9-96b1-7bd79c6bb317.png)
 
 ## **Monitoring**
 
 * Use Grafana + Prometheus for monitoring.
 
 * Basic monitoring (CPU, memory, disk, etc.) + specific metrics monitoring (uptime, block height, peers,validator status, etc.).
-  ![3a5773ae-1115-4d1b-b00f-f53bdb32ce61](file:///C:/Users/xubin/Pictures/Typedown/3a5773ae-1115-4d1b-b00f-f53bdb32ce61.png)
+  ![3a5773ae-1115-4d1b-b00f-f53bdb32ce61](https://github.com/nodeplusio/vara_node_operation/blob/main/img/3a5773ae-1115-4d1b-b00f-f53bdb32ce61.png)
 
 * Receive alerts through PagerDuty, Telegram, and DingTalk. Handle alerts promptly upon occurrence.
 
