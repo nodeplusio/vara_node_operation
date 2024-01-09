@@ -225,11 +225,59 @@ Once a validator gets slashed, it goes into the state as an "unapplied slash". Y
 The following levels of offense are [defined](https://research.web3.foundation/Polkadot/security/slashing/amounts). However, these particular levels are not implemented or referred to in the code or in the system; they are meant as guidelines for different levels of severity for offenses. To understand how slash amounts are calculated, see the equations in the section below.
 
 * Level 1: isolated [unresponsiveness](https://wiki.polkadot.network/docs/learn-staking-advanced#unresponsiveness), i.e. being offline for an entire session. Generally no slashing, only [chilling](https://wiki.polkadot.network/docs/learn-staking#chilling).
+
 * Level 2: concurrent unresponsiveness or isolated [equivocation](https://wiki.polkadot.network/docs/learn-staking-advanced#equivocation), slashes a very small amount of the stake and chills.
+
 * Level 3: misconducts unlikely to be accidental, but which do not harm the network's security to any large extent. Examples include concurrent equivocation or isolated cases of unjustified voting in [GRANDPA](https://wiki.polkadot.network/docs/learn-consensus). Slashes a moderately small amount of the stake and chills.
+
 * Level 4: misconduct that poses serious security or monetary risk to the system, or mass collusion. Slashes all or most of the stake behind the validator and chills.
-  
-  
+
+## Best practices to prevent slashing
+
+A slash may occur under four circumstances:
+
+1. Unresponsiveness
+
+2. Equivocation
+
+3. Malicious action
+
+4. Application related (bug or otherwise)
+
+This article provides some best practices to prevent slashing based on lessons learned from previous slashes. It provides comments and guidance for all circumstances except for malicious action by the node operator.
+
+##### Unresponsiveness
+
+The following are recommendations to validators to avoid slashing under liveliness for servers that have historically functioned:
+
+1. Utilize systems to host your validator instance. Systemd should be configured to auto reboot the service with a minimum 60-second delay. This configuration should aid with re-establishing the instance under isolated failures with the binary.
+2. A validator instance can demonstrate un-lively behaviour if it cannot sync new blocks. This may result from insufficient disk space or a corrupt database.
+3. Monitoring should be implemented that allows node operators to monitor connectivity network connectivity to the peer-to-peer port of the validator instance. Monitoring should also be implemented to ensure that there is <50 Block ‘drift’ between the target and best blocks. If either event produces a failure, the node operator should be notified. The following are recommendations to validators to avoid liveliness for new servers / migrated servers:
+4. Ensure that the `--validator` flag is used when starting the validator instance
+5. If switching keys, ensure that the correct session keys are applied
+6. If migrating using a two-server approach, ensure that you don’t switch off the original server too soon.
+7. Ensure that the database on the new server is fully synchronized.
+8. It is highly recommended to avoid hosting on providers that other validators may also utilize. If the provider fails, there is a probability that one or more other validators would also fail due to liveliness building to a slash.  
+   There is a precedent that a slash may be forgiven if a single validator faces an offline event when a larger operator also faces multiple offline events, resulting in a slash.
+
+##### Equivocation
+
+The following are scenarios that build towards slashes under equivocation,the following scenarios should be avoided:
+
+1. Cloning a server, i.e., copying all contents when migrating to new hardware. This action should be avoided. If an image is desired, it should be taken before keys are generated.
+2. High Availability (HA) Systems – Equivocation can occur if there are any concurrent operations, either when a failed server restarts or if false positive event results in both servers being online simultaneously. HA systems are to be treated with extreme caution and are not advised.
+3. The keystore folder is copied when attempting to copy a database from one instance to another.  
+   It is important to note that equivocation slashes occur with a single incident. This can happen if duplicated keystores are used for only a few seconds.
+
+##### Application Related
+
+In the past, there have been releases with bugs that lead to slashes; these issues are not as prevalent in current releases. The following are advised to node operators to ensure that they obtain pristine binaries or source code and to ensure the security of their node:
+
+1. Always download either source files or binaries from the official Parity repository
+2. Verify the hash of downloaded files.
+3. Use the W3F secure validator setup or adhere to its principles
+4. Ensure essential security items are checked, use a firewall, manage user access, use SSH certificates
+5. Avoid using your server as a general-purpose system. Hosting a validator on your workstation or one that hosts other services increases the risk of maleficence.
 
 ## Rewards management
 
@@ -260,3 +308,4 @@ Use the claim script to schedule rewards claim at the end of each era,after the 
 * Whitepaper: [https://whitepaper.gear.foundation/](https://whitepaper.gear.foundation/)
 * Gear Wiki: [https://wiki.gear-tech.io/](https://wiki.gear-tech.io/)
 * Gear Foundation: [https://gear.foundation/](https://gear.foundation/)
+* Polkadot Wiki: [https://wiki.polkadot.network/](https://wiki.polkadot.network/)
